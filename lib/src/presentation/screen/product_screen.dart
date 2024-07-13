@@ -1,18 +1,204 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class ProductScreen extends StatelessWidget {
-  final List<Product> products = List.generate(
-    7,
-    (index) => Product(
-      name: 'Logitech G Pro X Superlight Wireless Gaming Mouse',
-      profit: 3324.25,
-      stock: 3324,
-      image: 'assets/images/mouse.png',
-    ),
-  );
+class ProductScreen extends StatefulWidget {
+  const ProductScreen({super.key});
 
-  ProductScreen({super.key});
+  @override
+  _ProductScreenState createState() => _ProductScreenState();
+}
+
+class _ProductScreenState extends State<ProductScreen> {
+  List<Product> products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    products = List.generate(
+      7,
+      (index) => Product(
+        name: 'Logitech G Pro X Superlight Wireless Gaming Mouse',
+        profit: 3324.25,
+        stock: 3324,
+        image: 'assets/images/mouse.png',
+      ),
+    );
+  }
+
+  void showAddProductDialog(BuildContext context) {
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController profitController = TextEditingController();
+    final TextEditingController stockController = TextEditingController();
+    File? imageFile;
+
+    Future<void> pickImage() async {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      setState(() {
+        if (pickedFile != null) {
+          imageFile = File(pickedFile.path);
+        }
+      });
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.zero,
+          content: SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    hintText: 'Product Name',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: profitController,
+                  decoration: InputDecoration(
+                    hintText: 'Profit',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: stockController,
+                  decoration: InputDecoration(
+                    hintText: 'Stock',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: pickImage,
+                  child: SvgPicture.asset('assets/icons/addfoto.svg'),
+                ),
+                const SizedBox(height: 20),
+                imageFile != null ? Image.file(imageFile!) : const Text(''),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          side: const BorderSide(
+                              color: Color(0xFF262A46), width: 1),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Color(0xFF535778),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        final name = nameController.text;
+                        final profitText = profitController.text;
+                        final stockText = stockController.text;
+
+                        if (name.isEmpty ||
+                            profitText.isEmpty ||
+                            stockText.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('All fields are required'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final profit = double.tryParse(profitText);
+                        final stock = int.tryParse(stockText);
+
+                        if (profit == null || stock == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Invalid profit or stock'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final newProduct = Product(
+                          name: name,
+                          profit: profit,
+                          stock: stock,
+                          image: imageFile?.path ?? 'assets/images/default.png',
+                        );
+                        setState(() {
+                          products.add(newProduct);
+                        });
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        backgroundColor: Colors.amber,
+                      ),
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _editProduct(int index) {
+    // Implement edit functionality
+    print('Edit product at index: $index');
+  }
+
+  void _deleteProduct(int index) {
+    setState(() {
+      products.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +209,10 @@ class ProductScreen extends StatelessWidget {
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.all(13.0),
-          child: SvgPicture.asset(
-            'assets/icons/bag.svg',
-          ),
+          child: SvgPicture.asset('assets/icons/bag.svg'),
         ),
         title: const Text(
-          'ACHIEVEMENTS',
+          'PRODUCTS',
           style: TextStyle(
             color: Color(0xFFE0966D),
             fontWeight: FontWeight.bold,
@@ -40,21 +224,22 @@ class ProductScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, index) {
-          return ProductItem(product: products[index]);
+          return ProductItem(
+            product: products[index],
+            onEdit: () => _editProduct(index),
+            onDelete: () => _deleteProduct(index),
+          );
         },
       ),
       floatingActionButton: SizedBox(
         width: 345,
         height: 50,
         child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  // Ваш код для нажатия на кнопку
+                  showAddProductDialog(context);
                 },
                 child: Container(
                   height: 50,
@@ -86,8 +271,7 @@ class ProductScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerFloat, // Размещаем в центре
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
@@ -108,8 +292,15 @@ class Product {
 
 class ProductItem extends StatelessWidget {
   final Product product;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
-  const ProductItem({super.key, required this.product});
+  const ProductItem({
+    super.key,
+    required this.product,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -120,12 +311,27 @@ class ProductItem extends StatelessWidget {
         padding: const EdgeInsets.all(13.0),
         child: Row(
           children: [
-            Image.asset(
-              product.image,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
+            product.image.startsWith('assets')
+                ? Image.asset(
+                    product.image,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/default.png',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  )
+                : Image.file(
+                    File(product.image),
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -140,10 +346,10 @@ class ProductItem extends StatelessWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const Text.rich(
+                  Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(
+                        const TextSpan(
                           text: 'Total profit: ',
                           style: TextStyle(
                             color: Color(0xFFA3A3A3),
@@ -152,8 +358,8 @@ class ProductItem extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: '\$ 3324.25',
-                          style: TextStyle(
+                          text: '\$ ${product.profit}',
+                          style: const TextStyle(
                             color: Color(0xFF73D372),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -162,11 +368,10 @@ class ProductItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Text('In stock: ${product.stock}'),
-                  const Text.rich(
+                  Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(
+                        const TextSpan(
                           text: 'In stock: ',
                           style: TextStyle(
                             color: Color(0xFFA3A3A3),
@@ -175,8 +380,8 @@ class ProductItem extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: '3324',
-                          style: TextStyle(
+                          text: '${product.stock}',
+                          style: const TextStyle(
                             color: Color(0xFF262A46),
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -184,21 +389,21 @@ class ProductItem extends StatelessWidget {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
             const SizedBox(width: 10),
             Column(
               children: [
-                SvgPicture.asset(
-                  'assets/icons/writ.svg',
+                GestureDetector(
+                  onTap: onEdit,
+                  child: SvgPicture.asset('assets/icons/writ.svg'),
                 ),
-                const SizedBox(
-                  height: 9,
-                ),
-                SvgPicture.asset(
-                  'assets/icons/deleit.svg',
+                const SizedBox(height: 9),
+                GestureDetector(
+                  onTap: onDelete,
+                  child: SvgPicture.asset('assets/icons/deleit.svg'),
                 ),
               ],
             ),

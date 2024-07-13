@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:t89/src/presentation/widgets/%20cantainer_add_pr_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -20,7 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path); 
+        _imageFile = File(pickedFile.path);
       });
     }
   }
@@ -65,7 +66,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     decoration: ShapeDecoration(
                       image: DecorationImage(
                         image: _imageFile != null
-                            ? FileImage(_imageFile!) 
+                            ? FileImage(_imageFile!)
                             : const NetworkImage(
                                 "https://via.placeholder.com/75x75"),
                         fit: BoxFit.fill,
@@ -391,77 +392,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     fontFamily: 'SF Pro Display',
                     fontWeight: FontWeight.w500,
                   ),
-                  maxLines:
-                      null,
+                  maxLines: null,
                 ),
               )
             ],
           ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    height: 44,
-                    width: 140,
-                    decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1, color: Color(0xFF262A46)),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(4),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(4),
-                        ),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Color(0xFF535778),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    height: 44,
-                    width: 140,
-                    decoration: const ShapeDecoration(
-                      color: Color(0xFF262A46),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(4),
-                          bottomRight: Radius.circular(30),
-                        ),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Send',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          actions: const [
+            CantainerAddPr(
+              text1: 'Cancel',
+              text2: 'Save',
+              colors: Color(0xFF262A46),
             ),
           ],
         );
@@ -499,71 +439,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    height: 44,
-                    width: 140,
-                    decoration: const ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1, color: Color(0xFF262A46)),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(4),
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(4),
-                        ),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Color(0xFF535778),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    height: 44,
-                    width: 140,
-                    decoration: const ShapeDecoration(
-                      color: Colors.red,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(30),
-                          bottomLeft: Radius.circular(4),
-                          bottomRight: Radius.circular(30),
-                        ),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Delete',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          actions: const [
+            CantainerAddPr(
+              text1: 'Cancel',
+              text2: 'Save',
+              colors: Colors.red,
             ),
           ],
         );
