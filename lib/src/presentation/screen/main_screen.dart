@@ -14,7 +14,6 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
         leading: const Icon(Icons.menu, color: Color(0xFFE0966D)),
         title: const Text(
           'MAIN',
