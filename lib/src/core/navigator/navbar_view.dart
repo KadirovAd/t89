@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:t89/src/presentation/screen/achievements_screen.dart';
-import 'package:t89/src/presentation/screen/main_screen.dart';
-import 'package:t89/src/presentation/screen/product_screen.dart';
-import 'package:t89/src/presentation/screen/statistics_screen.dart';
-import 'package:t89/src/presentation/screen/settings_screen.dart';
+import 'package:t89/src/presentation/screen/achievements_screen/achievements_screen.dart';
+import 'package:t89/src/presentation/screen/home_view/home_view.dart';
+import 'package:t89/src/presentation/screen/product_screen/product_screen.dart';
+import 'package:t89/src/presentation/screen/statistics_screen/statistics_screen.dart';
+import 'package:t89/src/presentation/screen/settings_screen/settings_screen.dart';
 
 class NavbarView extends StatefulWidget {
   const NavbarView({super.key});
@@ -14,9 +14,14 @@ class NavbarView extends StatefulWidget {
 }
 
 class _NavbarViewState extends State<NavbarView> {
+  @override
+  void initState() {
+    super.initState();
+    
+  }
   int _currentIndex = 0;
   final List<Widget> views = [
-    const MainScreen(),
+    const HomeView(),
     const ProductScreen(),
     const StatisticsScreen(),
     AchievementsScreen(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class AchievementsScreen extends StatelessWidget {
   final List<Achievement> achievements = [
@@ -50,25 +51,26 @@ class AchievementsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
         leading: Padding(
-          padding: const EdgeInsets.all(13.0),
+          padding: EdgeInsets.all(13.0.sp),
           child: SvgPicture.asset(
             'assets/icons/ranking.svg',
           ),
         ),
-        title: const Text(
-          'ACHIEVEMENTS',
-          style: TextStyle(
-            color: Color(0xFFE0966D),
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
+        title: Padding(
+          padding: EdgeInsets.only(right: 49.sp),
+          child: Text(
+            'ACHIEVEMENTS',
+            style: TextStyle(
+              color: const Color(0xFFE0966D),
+              fontWeight: FontWeight.bold,
+              fontSize: 19.sp,
+            ),
           ),
         ),
-        titleSpacing: 0,
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0.sp),
         itemCount: achievements.length,
         itemBuilder: (context, index) {
           return AchievementCard(achievement: achievements[index]);
@@ -113,11 +115,11 @@ class AchievementCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.star_border, color: Colors.yellow[700]),
-              const SizedBox(width: 8.0),
+              SizedBox(width: 8.0.w),
               Text(
                 achievement.title,
-                style: const TextStyle(
-                  fontSize: 18.0,
+                style: TextStyle(
+                  fontSize: 18.0.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -128,7 +130,7 @@ class AchievementCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 2.0),
                 child: Text(
                   '• $task',
-                  style: const TextStyle(fontSize: 16.0),
+                  style: TextStyle(fontSize: 16.0.sp),
                 ),
               )),
         ],

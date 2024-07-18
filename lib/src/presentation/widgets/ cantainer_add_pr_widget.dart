@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CantainerAddPr extends StatelessWidget {
   const CantainerAddPr({
@@ -7,10 +7,12 @@ class CantainerAddPr extends StatelessWidget {
     required this.text1,
     required this.text2,
     required this.colors,
+    this.onTap,
   });
   final String text1;
   final String text2;
   final Color colors;
+  final Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -21,8 +23,8 @@ class CantainerAddPr extends StatelessWidget {
             Navigator.of(context).pop();
           },
           child: Container(
-            height: 44,
-            width: 150,
+            height: 4.4.h,
+            width: 35.w,
             decoration: const ShapeDecoration(
               shape: RoundedRectangleBorder(
                 side: BorderSide(width: 1, color: Color(0xFF262A46)),
@@ -37,9 +39,9 @@ class CantainerAddPr extends StatelessWidget {
             child: Center(
               child: Text(
                 text1,
-                style: const TextStyle(
-                  color: Color(0xFF535778),
-                  fontSize: 15,
+                style: TextStyle(
+                  color: const Color(0xFF535778),
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -47,12 +49,10 @@ class CantainerAddPr extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
+          onTap: onTap,
           child: Container(
-            height: 44,
-            width: 140,
+            height: 4.4.h,
+            width: 35.w,
             decoration: ShapeDecoration(
               color: colors,
               shape: const RoundedRectangleBorder(
@@ -67,9 +67,9 @@ class CantainerAddPr extends StatelessWidget {
             child: Center(
               child: Text(
                 text2,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),

@@ -1,8 +1,12 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:t89/src/models/product_models/product_provider/product_provider.dart';
+import 'package:t89/src/models/user_models/user.dart';
+import 'package:t89/src/presentation/screen/splash_view/splash_view.dart';
 import 'package:t89/src/presentation/widgets/%20cantainer_add_pr_widget.dart';
+import 'package:t89/src/presentation/widgets/alert_profile_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,41 +17,29 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _switchValue = false;
-  String companyName = "Company Name";
-  File? _imageFile;
-
-  Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final userModel = Provider.of<UserModel>(context);
+    final providerP = Provider.of<ProductProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white.withOpacity(0.75),
-        title: const Row(
-          children: [
-            Icon(
-              Icons.settings,
-              color: Color(0xFFE0966D),
+        leading: const Icon(
+          Icons.settings,
+          color: Color(0xFFE0966D),
+        ),
+        title: Padding(
+          padding: EdgeInsets.only(right: 50.sp),
+          child: Text(
+            'SETTINGS',
+            style: TextStyle(
+              color: const Color(0xFFE0966D),
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
             ),
-            SizedBox(width: 15),
-            Text(
-              'SETTINGS',
-              style: TextStyle(
-                color: Color(0xFFE0966D),
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
       body: Padding(
@@ -56,19 +48,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                _showEditCompanyNameDialog(context);
+                showAlertUpdateDialog(context);
               },
               child: Row(
                 children: [
                   Container(
-                    width: 75,
-                    height: 75,
+                    width: 20.w,
+                    height: 7.h,
                     decoration: ShapeDecoration(
                       image: DecorationImage(
-                        image: _imageFile != null
-                            ? FileImage(_imageFile!)
+                        image: userModel.photoProfile != null
+                            ? FileImage(userModel.photoProfile!)
                             : const NetworkImage(
-                                "https://via.placeholder.com/75x75"),
+                                    "https://via.placeholder.com/75x75")
+                                as ImageProvider,
                         fit: BoxFit.fill,
                       ),
                       shape: RoundedRectangleBorder(
@@ -76,10 +69,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 1.w),
                   Expanded(
                     child: Container(
-                      height: 47,
+                      height: 4.7.h,
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       decoration: const ShapeDecoration(
                         color: Color(0xFFF6F6F6),
@@ -96,9 +89,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: [
                           Expanded(
                             child: Text(
-                              companyName,
-                              style: const TextStyle(
-                                fontSize: 15,
+                              userModel.name,
+                              style: TextStyle(
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -114,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 2.h),
             InkWell(
               onTap: () {
                 setState(() {
@@ -136,14 +129,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 iconPath: 'assets/icons/notification.svg',
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 1.5.h),
             buildSettingOption(
               context,
               title: 'Rate Us',
               trailing: const Icon(Icons.chevron_right),
               iconPath: 'assets/icons/like.svg',
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 1.5.h),
             GestureDetector(
               onTap: () {
                 _showFeedbackDialog(context);
@@ -155,10 +148,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 iconPath: 'assets/icons/like.svg',
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: 1.5.h),
             GestureDetector(
               onTap: () {
-                _showDeleteProfileDialog(context);
+                _showDeleteProfileDialog(context, providerP);
               },
               child: buildSettingOption(
                 context,
@@ -182,7 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       Widget? trailing,
       required String iconPath}) {
     return Container(
-      height: 60,
+      height: 6.h,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
       decoration: ShapeDecoration(
@@ -196,8 +189,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           SvgPicture.asset(
             iconPath,
-            width: 26,
-            height: 26,
+            width: 13.w,
+            height: 13.w,
           ),
           Expanded(
             child: Padding(
@@ -206,7 +199,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title,
                 style: TextStyle(
                   color: titleColor,
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -218,113 +211,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showEditCompanyNameDialog(BuildContext context) {
-    TextEditingController nameController =
-        TextEditingController(text: companyName);
-
+  void showAlertUpdateDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) {
-        return Dialog(
+      builder: (BuildContext context) {
+        return const AlertDialog(
           backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    hintText: 'Company Name',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                    onTap: _pickImage,
-                    child: SvgPicture.asset('assets/icons/addfoto.svg')),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        height: 44,
-                        width: 145,
-                        decoration: const ShapeDecoration(
-                          shape: RoundedRectangleBorder(
-                            side:
-                                BorderSide(width: 1, color: Color(0xFF262A46)),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30),
-                              topRight: Radius.circular(4),
-                              bottomLeft: Radius.circular(30),
-                              bottomRight: Radius.circular(4),
-                            ),
-                          ),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: Color(0xFF535778),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 1),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          companyName = nameController.text;
-                        });
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        height: 44,
-                        width: 145,
-                        decoration: const ShapeDecoration(
-                          color: Color(0xFF262A46),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(4),
-                              topRight: Radius.circular(30),
-                              bottomLeft: Radius.circular(4),
-                              bottomRight: Radius.circular(30),
-                            ),
-                          ),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          actions: [
+            ProfilAlert(),
+          ],
         );
       },
     );
@@ -339,29 +234,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text(
+          title: Text(
             'Share your feedback',
             style: TextStyle(
-              color: Color(0xFF535778),
-              fontSize: 15,
+              color: const Color(0xFF535778),
+              fontSize: 15.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 'Do you enjoy using APP NAME? What can we do to improve your experience?',
                 style: TextStyle(
-                  color: Color(0xFF9B9B9B),
-                  fontSize: 15,
+                  color: const Color(0xFF9B9B9B),
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 10),
               Container(
-                width: 315,
-                height: 142,
+                width: 315.w,
+                height: 15.h,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
                 clipBehavior: Clip.antiAlias,
@@ -380,15 +275,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     hintText: 'Describe your experience or suggestions',
                     hintStyle: TextStyle(
                       color: const Color(0xFF535778).withOpacity(0.5),
-                      fontSize: 14,
+                      fontSize: 14.sp,
                       fontFamily: 'SF Pro Display',
                       fontWeight: FontWeight.w500,
                     ),
                     border: InputBorder.none,
                   ),
-                  style: const TextStyle(
-                    color: Color(0xFF535778),
-                    fontSize: 14,
+                  style: TextStyle(
+                    color: const Color(0xFF535778),
+                    fontSize: 14.sp,
                     fontFamily: 'SF Pro Display',
                     fontWeight: FontWeight.w500,
                   ),
@@ -409,7 +304,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showDeleteProfileDialog(BuildContext context) {
+  void _showDeleteProfileDialog(
+    BuildContext context,
+    ProductProvider providerP,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -418,31 +316,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text(
+          title: Text(
             'Are you sure want to delete profile?',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFF535778),
-              fontSize: 15,
+              color: const Color(0xFF535778),
+              fontSize: 15.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
-          content: const Opacity(
+          content: Opacity(
             opacity: 0.50,
             child: Text(
               'This will completely and irrevocably delete your profile.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Color(0xFF535778),
-                fontSize: 15,
+                color: const Color(0xFF535778),
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          actions: const [
+          actions: [
             CantainerAddPr(
+              onTap: () {
+                providerP.clearProdct();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SplashScreen(),
+                  ),
+                );
+              },
               text1: 'Cancel',
-              text2: 'Save',
+              text2: 'Delete',
               colors: Colors.red,
             ),
           ],
