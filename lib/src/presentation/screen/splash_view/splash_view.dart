@@ -20,7 +20,6 @@ class SplashScreen extends StatelessWidget {
               fontSize: 0.35.dp,
               fontFamily: 'SF Pro Display',
               fontWeight: FontWeight.w600,
-              height: 0,
             ),
           ),
           SizedBox(
